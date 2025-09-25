@@ -1,0 +1,115 @@
+/* pages/stats/stats.wxss */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* --- 以下为核心改动 --- */
+.container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  padding: 30rpx;
+}
+/* --- 核心改动结束 --- */
+
+
+.header {
+  margin-bottom: 30rpx;
+  text-align: center;
+}
+
+.date-picker {
+  display: inline-block;
+  padding: 15rpx 40rpx;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10rpx);
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.arrow-down {
+  margin-left: 10rpx;
+  color: #999;
+}
+
+.stats-card {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10rpx);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 24rpx 0 rgba(0,0,0,0.08);
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 30rpx;
+  text-align: center;
+  color: #333;
+}
+
+.stats-list {
+  width: 100%;
+}
+
+.stats-item {
+  display: flex;
+  align-items: center;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid rgba(245, 245, 245, 0.8);
+}
+
+.stats-item:last-child {
+  border-bottom: none;
+}
+
+.rank-badge {
+  flex-shrink: 0;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+}
+
+.rank-1 { background-color: #FFD700; color: #fff; }
+.rank-2 { background-color: #C0C0C0; color: #fff; }
+.rank-3 { background-color: #CD7F32; color: #fff; }
+
+.dish-name {
+  flex-grow: 1;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.dish-count {
+  font-size: 28rpx;
+  color: #555;
+  font-weight: bold;
+}
+
+.loading-tip, .empty-tip {
+  text-align: center;
+  color: #888;
+  padding: 40rpx 0;
+}

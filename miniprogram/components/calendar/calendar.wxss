@@ -1,0 +1,60 @@
+/* components/calendar/calendar.wxss */
+.calendar-container {
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20rpx;
+  box-sizing: border-box;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  font-size: 16px;
+  font-weight: bold;
+}
+.arrow {
+  padding: 10rpx 20rpx;
+  cursor: pointer;
+}
+.weekdays {
+  display: flex;
+  font-size: 14px;
+}
+.weekday {
+  flex: 1;
+  text-align: center;
+  padding: 10rpx 0;
+}
+.days {
+  display: flex;
+  flex-wrap: wrap;
+}
+.grid {
+  width: 14.28%;
+  text-align: center;
+  padding: 20rpx 0;
+  box-sizing: border-box;
+  position: relative;
+  
+  /* --- 核心修改在这里 --- */
+  /* 从 border-radius: 50%; 修改为 8rpx，从圆形变为圆角矩形 */
+  border-radius: 8rpx;
+  
+  transition: all 0.2s ease-in-out;
+}
+.empty {
+  color: #ccc;
+}
+.selected {
+  background-color: #07c160;
+  color: #fff;
+  transform: scale(1.05); /* 缩放效果可以稍微减小一点，更适合矩形 */
+}
+.marked {
+  background-color: #e6f6e6; /* 淡绿色背景 */
+  color: #07c160; /* 深绿色文字，与主题色一致 */
+  font-weight: bold;
+}

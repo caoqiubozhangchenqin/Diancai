@@ -1,0 +1,18 @@
+<!--components/calendar/calendar.wxml-->
+<view class="calendar-container">
+  <view class="header">
+    <view class="arrow" bindtap="prevMonth">‹</view>
+    <view class="date">{{year}}年{{month}}月</view>
+    <view class="arrow" bindtap="nextMonth">›</view>
+  </view>
+  <view class="weekdays">
+    <view class="weekday" wx:for="{{['日', '一', '二', '三', '四', '五', '六']}}" wx:key="*this">{{item}}</view>
+  </view>
+  <view class="days">
+    <view wx:for="{{emptyGrids}}" wx:key="*this" class="grid empty"></view>
+    <!-- 主要改动在这里：添加了 '{{item.hasMenu ? 'marked' : ''}}'，并移除了里面的小红点 view -->
+    <view wx:for="{{days}}" wx:key="*this" class="grid {{item.day === selectedDay ? 'selected' : ''}} {{item.hasMenu ? 'marked' : ''}}" data-day="{{item.day}}" bindtap="selectDay">
+      <view>{{item.day}}</view>
+    </view>
+  </view>
+</view>

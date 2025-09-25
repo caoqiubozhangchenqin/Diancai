@@ -1,0 +1,116 @@
+/* pages/order/order.wxss */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+.container {
+  position: relative;
+  min-height: 100vh;
+}
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  padding: 20rpx;
+}
+.title-wrapper {
+  text-align: center;
+  margin: 20rpx 0 40rpx;
+}
+.page-title {
+  display: inline-block;
+  padding: 10rpx 30rpx;
+  background-color: rgba(0, 0, 0, 0.3);
+  
+  /* --- 核心修改1：从 50rpx 修改为 12rpx --- */
+  border-radius: 12rpx; /* 从胶囊形状变为圆角矩形 */
+  
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+  text-shadow: none;
+}
+.category-group {
+  margin-bottom: 30rpx;
+}
+.category-title-wrapper {
+  margin-bottom: 20rpx;
+}
+.category-title {
+  display: inline-block;
+  padding: 8rpx 25rpx;
+  background-color: rgba(0, 0, 0, 0.3);
+
+  /* --- 核心修改2：从 50rpx 修改为 12rpx --- */
+  border-radius: 12rpx; /* 从胶囊形状变为圆角矩形 */
+
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+  padding-left: 25rpx;
+  text-shadow: none;
+}
+
+/* --- 卡片样式保持不变 --- */
+.dish-card {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10rpx);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+.dish-card.selected {
+  border-color: #07c160;
+  transform: scale(1.02);
+}
+.dish-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.dish-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+.dish-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10rpx;
+}
+.dish-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+.order-count {
+  font-size: 24rpx;
+  color: #888;
+}
+.dish-extra {
+  font-size: 26rpx;
+  color: #888;
+}
+.checkbox-icon {
+  margin-left: 20rpx;
+}
+.submit-btn {
+  margin-top: 40rpx;
+  margin-bottom: 40rpx;
+}

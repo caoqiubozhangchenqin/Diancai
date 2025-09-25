@@ -1,0 +1,31 @@
+<!--pages/stats/stats.wxml-->
+<view class="container">
+  <!-- 核心改动1：添加背景图标签，src 指向 JS 里的变量 -->
+  <image wx:if="{{bgImageUrl}}" class="bg-image" src="{{bgImageUrl}}" mode="aspectFill"></image>
+
+  <!-- 核心改动2：用 content-wrapper 把所有内容包裹起来 -->
+  <view class="content-wrapper">
+    <view class="header">
+      <picker mode="month" bindchange="onMonthChange">
+        <view class="date-picker">
+          {{selectedMonth}} <text class="arrow-down">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="stats-card">
+      <view class="card-title">本月点菜排行榜</view>
+      <view class="loading-tip" wx:if="{{loading}}">正在玩命统计中...</view>
+      <view class="stats-list" wx:if="{{!loading && rankedDishes.length > 0}}">
+        <view class="stats-item" wx:for="{{rankedDishes}}" wx:key="_id">
+          <text class="rank-badge rank-{{index + 1}}">{{index + 1}}</text>
+          <text class="dish-name">{{item.name}}</text>
+          <text class="dish-count">{{item.count}} 次</text>
+        </view>
+      </view>
+      <view class="empty-tip" wx:if="{{!loading && rankedDishes.length === 0}}">
+        这个月还没有点菜记录哦~
+      </view>
+    </view>
+  </view>
+</view>

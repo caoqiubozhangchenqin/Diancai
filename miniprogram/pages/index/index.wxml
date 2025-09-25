@@ -1,0 +1,45 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 
+    核心改动：新增一个 <image> 标签作为背景。
+    它的样式将在 wxss 文件中被设置为铺满全屏并置于底层。
+    !!重要!! 请确保这里的 src 路径和你的图片文件名完全一致。
+  -->
+  <image wx:if="{{bgImageUrl}}" class="bg-image" src="{{bgImageUrl}}" mode="aspectFill"></image>
+  <!-- 
+    新增一个 content-wrapper 容器，它将浮在背景图之上，
+    承载我们所有的内容（卡片、日历等）。
+  -->
+  <view class="content-wrapper">
+    <view class="menu-display-area">
+      <!-- 今日菜单部分 -->
+      <view class="menu-section">
+        <view class="card-title">今天（{{todayDateString}}）吃什么？</view>
+        <view class="menu-list" wx:if="{{todayMenuDishes.length > 0}}">
+          <view class="menu-item" wx:for="{{todayMenuDishes}}" wx:key="_id">{{item.name}}</view>
+        </view>
+        <view class="empty-tip" wx:else>今天还没点菜呢！</view>
+      </view>
+      
+      <!-- 选中日菜单部分 -->
+      <view class="menu-section">
+        <view class="card-title">选中日（{{selectedDateString}}）菜单</view>
+        <view class="menu-list" wx:if="{{selectedMenuDishes.length > 0}}">
+           <view class="menu-item" wx:for="{{selectedMenuDishes}}" wx:key="_id">{{item.name}}</view>
+        </view>
+        <view class="empty-tip" wx:else>当天没有点菜记录哦~</view>
+
+        <button type="primary" class="order-btn" bindtap="goToOrderPage">{{orderButtonText}}</button>
+      </view>
+    </view>
+
+    <!-- 日历组件 -->
+    <calendar 
+      id="calendar" 
+      bind:daySelect="onDaySelect" 
+      bind:monthChange="onMonthChange" 
+      markedDays="{{markedDaysInMonth}}">
+    </calendar>
+    <button class="stats-btn" bindtap="goToStatsPage">查看每月点菜统计</button>
+  </view>
+</view>

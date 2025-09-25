@@ -1,0 +1,47 @@
+<!--pages/order/order.wxml-->
+<view class="container">
+  <image wx:if="{{bgImageUrl}}" class="bg-image" src="{{bgImageUrl}}" mode="aspectFill"></image>>
+
+  <view class="content-wrapper">
+    <!-- 核心改动1：为标题增加一个 wrapper 包裹 -->
+    <view class="title-wrapper">
+      <view class="page-title">为 {{date}} 点菜</view>
+    </view>
+    
+    <view wx:for="{{ groupedDishes }}" wx:for-item="group" wx:key="category" class="category-group">
+      <!-- 核心改动2：为分类标题增加一个 wrapper 包裹 -->
+      <view class="category-title-wrapper">
+        <view class="category-title">{{group.category}}</view>
+      </view>
+      
+      <view 
+        class="dish-card {{selectedDishesMap[item._id] ? 'selected' : ''}}" 
+        wx:for="{{group.dishes}}" 
+        wx:for-item="item" 
+        wx:key="_id"
+        data-dishid="{{item._id}}"
+        bindtap="onCardTap"
+      >
+        <!-- 卡片内部结构保持不变 -->
+        <image 
+          class="dish-image" 
+          src="{{item.image_url || '/images/placeholder.png'}}" 
+          mode="aspectFill">
+        </image>
+        <view class="dish-info">
+          <view class="dish-name-row">
+            <text class="dish-name">{{item.name}}</text>
+            <text class="order-count">点过 {{item.order_count || 0}} 次</text>
+          </view>
+          <view class="dish-extra"></view>
+        </view>
+        <view class="checkbox-icon">
+          <icon wx:if="{{selectedDishesMap[item._id]}}" type="success_circle" size="22" color="#07c160"></icon>
+          <icon wx:else type="circle" size="22" color="#ccc"></icon>
+        </view>
+      </view>
+    </view>
+
+    <button type="primary" class="submit-btn" bindtap="submitMenu">提交菜单</button>
+  </view>
+</view>
