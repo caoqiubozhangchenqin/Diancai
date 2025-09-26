@@ -1,15 +1,13 @@
 <!--pages/order/order.wxml-->
 <view class="container">
-  <image wx:if="{{bgImageUrl}}" class="bg-image" src="{{bgImageUrl}}" mode="aspectFill"></image>>
+  <image wx:if="{{bgImageUrl}}" class="bg-image" src="{{bgImageUrl}}" mode="aspectFill"></image>
 
   <view class="content-wrapper">
-    <!-- 核心改动1：为标题增加一个 wrapper 包裹 -->
     <view class="title-wrapper">
       <view class="page-title">为 {{date}} 点菜</view>
     </view>
     
     <view wx:for="{{ groupedDishes }}" wx:for-item="group" wx:key="category" class="category-group">
-      <!-- 核心改动2：为分类标题增加一个 wrapper 包裹 -->
       <view class="category-title-wrapper">
         <view class="category-title">{{group.category}}</view>
       </view>
@@ -22,10 +20,10 @@
         data-dishid="{{item._id}}"
         bindtap="onCardTap"
       >
-        <!-- 卡片内部结构保持不变 -->
+        <!-- 【核心修改】将 src 绑定到新的 temp_image_url 属性上 -->
         <image 
           class="dish-image" 
-          src="{{item.image_url || '/images/placeholder.png'}}" 
+          src="{{item.temp_image_url || '/images/placeholder.png'}}" 
           mode="aspectFill">
         </image>
         <view class="dish-info">
