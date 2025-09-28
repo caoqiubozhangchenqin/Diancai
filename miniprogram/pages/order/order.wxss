@@ -14,6 +14,34 @@ page {
   height: 100%;
   z-index: 0;
 }
+.bg-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Ensure the background layer spans full width so background-image is visible and can be centered */
+  width: 100%;
+  /* 高度随内容撑开，使用 repeat-y 来纵向重复图片 */
+  height: 100%;
+  /* 现在要求：一模一样复制的重复显示（横向 + 纵向） */
+  background-repeat: repeat; /* 横向与纵向都平铺 */
+  background-position: center top; /* 固定居中水平对齐 */
+  background-size: auto !important; /* 保持图片原始大小，使用 !important 防止被其他样式覆盖 */
+  z-index: 0;
+  pointer-events: none; /* 背景不捕获点击事件 */
+}
+
+.bg-debug {
+  position: fixed;
+  left: 10rpx;
+  bottom: 10rpx;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 8rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  z-index: 2000;
+}
 .content-wrapper {
   position: relative;
   z-index: 1;

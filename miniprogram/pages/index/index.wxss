@@ -95,3 +95,46 @@ calendar {
   color: #333;
   width: 100%;
 }
+
+/* 背景音乐浮动按钮 */
+.music-fab {
+  position: fixed;
+  right: 30rpx;
+  bottom: 60rpx;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 48rpx;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 20rpx rgba(0,0,0,0.12);
+  z-index: 1000;
+}
+.music-fab image {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+/* 右上角音乐图标 */
+.music-top-right {
+  position: fixed;
+  top: 20rpx;
+  right: 20rpx;
+  width: 68rpx;
+  height: 68rpx;
+  z-index: 1200;
+}
+.music-top-right .music-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 34rpx;
+  box-shadow: 0 6rpx 16rpx rgba(0,0,0,0.12);
+}
+.music-top-right .rotating {
+  animation: spin 3s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

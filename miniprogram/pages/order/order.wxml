@@ -1,6 +1,9 @@
 <!--pages/order/order.wxml-->
 <view class="container">
-  <image wx:if="{{bgImageUrl}}" class="bg-image" src="{{bgImageUrl}}" mode="aspectFill"></image>
+  <!-- 使用背景图层，不改变图片尺寸并在纵向重复 -->
+  <view wx:if="{{bgImageUrl}}" class="bg-tile" style="background-image: url('{{bgImageUrl}}'); background-size: {{bgSize}}; background-repeat: {{bgRepeat}}; background-position: {{bgPosition}};"></view>
+
+
 
   <view class="content-wrapper">
     <view class="title-wrapper">

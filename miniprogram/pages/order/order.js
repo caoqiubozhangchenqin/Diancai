@@ -8,7 +8,10 @@ Page({
     groupedDishes: [],
     selectedDishes: [],
     selectedDishesMap: {},
-    bgImageUrl: ''
+    bgImageUrl: '',
+    bgSize: 'auto',
+    bgRepeat: 'repeat',
+    bgPosition: 'center top'
   },
 
   onLoad(options) {
@@ -20,12 +23,34 @@ Page({
       db = cloud.database();
       _ = db.command;
 
-      // 获取背景图
-      cloud.getTempFileURL({
-        fileList: ['cloud://cloud1-3ge5gomsffe800a7.636c-cloud1-ge5gomsffe800a7-1373366709/diancai/background/diancai.png']
-      }).then(res => {
-        if (res.fileList.length > 0) this.setData({ bgImageUrl: res.fileList[0].tempFileURL });
-      }).catch(error => console.error("获取点菜页背景图失败", error));
+      // 为了确保刚上传的 diancai.png 能立即显示，即使 globalData 中已有旧的临时URL，也尝试刷新一次
+      const diancaiFileID = 'cloud://cloud1-3ge5gomsffe800a7.636c-cloud1-3ge5gomsffe800a7-1373366709/diancai/background/diancai.png';
+      cloud.getTempFileURL({ fileList: [diancaiFileID] }).then(res => {
+        if (res.fileList && res.fileList.length > 0) {
+          const url = res.fileList[0].tempFileURL;
+          // 更新全局缓存的 url
+          if (app.globalData) app.globalData.diancaiImageUrl = url;
+          // 决定背景显示策略
+          wx.getImageInfo({ src: url, success: imgRes => {
+            // imgRes.width/height 是设备像素，需要除以 pixelRatio 转为 CSS 像素
+            const sys = wx.getSystemInfoSync();
+            const ratio = sys.pixelRatio || 1;
+            const cssW = Math.round(imgRes.width / ratio);
+            const cssH = Math.round(imgRes.height / ratio);
+            // 将 background-size 设置为精确的像素值，保持纵横比并防止被缩放
+            this.setData({ bgImageUrl: url, bgSize: `${cssW}px ${cssH}px`, bgRepeat: 'repeat', bgPosition: 'center top' });
+          }, fail: () => {
+            // 获取图片信息失败，回退为直接使用并重复（让 CSS 的 !important 生效）
+            this.setData({ bgImageUrl: url, bgSize: 'auto', bgRepeat: 'repeat-y' });
+          }});
+        } else if (app.globalData && app.globalData.bgImageUrl) {
+          // 回退到已有 bgImageUrl
+          this.setData({ bgImageUrl: app.globalData.bgImageUrl });
+        }
+      }).catch(err => {
+        console.error('刷新 diancai.png 临时链接失败', err);
+        if (app.globalData && app.globalData.bgImageUrl) this.setData({ bgImageUrl: app.globalData.bgImageUrl });
+      });
       
       // 加载菜单
       this.fetchDishes();

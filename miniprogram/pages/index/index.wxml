@@ -41,5 +41,9 @@
       markedDays="{{markedDaysInMonth}}">
     </calendar>
     <button class="stats-btn" bindtap="goToStatsPage">查看每月点菜统计</button>
+    <!-- 右上角音乐图标（自动播放时旋转） -->
+    <view class="music-top-right" bindtap="toggleMusic" data-action="toggle">
+      <image class="music-icon {{isPlaying? 'rotating': ''}}" src="{{musicIconUrl || '/images/avatar.png'}}" mode="aspectFill"></image>
+    </view>
   </view>
 </view>

@@ -10,50 +10,49 @@ Page({
     selectedMenuDishes: [],
     markedDaysInMonth: [],
     orderButtonText: '去点菜',
-    bgImageUrl: ''
+    bgImageUrl: '',
+    isPlaying: false,
+    musicIconUrl: ''
   },
 
   onLoad(options) {
-    // 【核心改造】等待app.js中的Promise完成后再执行后续操作
-    app.globalData.cloudPromise.then(cloud => {
-      // 从初始化好的全局实例中获取数据库引用和command
-      db = cloud.database();
-      _ = db.command;
-      
-      // 获取背景图
-      cloud.getTempFileURL({
-        fileList: ['cloud://cloud1-3ge5gomsffe800a7.636c-cloud1-3ge5gomsffe800a7-1373366709/diancai/background/bg.png'] 
-      }).then(res => {
-        if (res.fileList.length > 0) this.setData({ bgImageUrl: res.fileList[0].tempFileURL });
-      }).catch(error => console.error("获取背景图失败", error));
-
-      // 页面加载时刷新数据
+    // 等待全局 cloud 初始化完成
+    app.globalData.cloudPromise && app.globalData.cloudPromise.then(() => {
+      // 将全局的 icon url 注入页面
+      this.setData({ musicIconUrl: app.globalData.musicIconUrl || '', bgImageUrl: app.globalData.bgImageUrl || '' });
+      // 如果 global bgm 存在，设置页面播放状态
+      const bgm = app.globalData.bgm;
+      if (bgm) {
+        this.setData({ isPlaying: !!bgm.src && !bgm.paused });
+        // 绑定事件以同步状态
+        bgm.onPlay && bgm.onPlay(() => this.setData({ isPlaying: true }));
+        bgm.onPause && bgm.onPause(() => this.setData({ isPlaying: false }));
+        bgm.onStop && bgm.onStop(() => this.setData({ isPlaying: false }));
+        bgm.onEnded && bgm.onEnded(() => this.setData({ isPlaying: false }));
+      }
+      // 初始化 db 引用
+      try { db = app.globalData.cloud.database(); _ = db.command; } catch(e){}
       this.refreshPageData();
-      
     }).catch(err => {
-      console.error('首页加载共享云环境失败', err);
-      wx.showModal({ title: '错误', content: '加载云服务失败，请重启小程序' });
+      // 如果 cloud 初始化失败，也尝试加载页面数据（db 为空时函数会短路）
+      this.refreshPageData();
     });
   },
 
   onShow() {
-    // onShow时也需要确保db已初始化
-    if (db) {
-      this.refreshPageData();
-    }
+    // 同步状态
+    const bgm = app.globalData.bgm;
+    if (bgm) this.setData({ isPlaying: !!bgm.src && !bgm.paused });
   },
 
   refreshPageData() {
     if (!db) return; // 安全校验
     wx.showLoading({ title: '刷新中...' });
-
     const today = new Date();
     const formatDate = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const todayStr = formatDate(today.getFullYear(), today.getMonth() + 1, today.getDate());
     const currentSelectedDate = this.data.selectedDateString || todayStr;
-
     this.setData({ todayDateString: todayStr, selectedDateString: currentSelectedDate });
-
     const [year, month] = currentSelectedDate.split('-').map(Number);
 
     Promise.all([
@@ -70,14 +69,14 @@ Page({
       });
       wx.hideLoading();
     }).catch(err => {
-      console.error("页面刷新失败", err);
+      console.error('页面刷新失败', err);
       wx.hideLoading();
       wx.showToast({ title: '数据刷新失败', icon: 'none' });
     });
   },
 
   getMenuByDate(dateStr) {
-    if (!db) return Promise.resolve([]); // 【新增】安全校验
+    if (!db) return Promise.resolve([]);
     return db.collection('diancai_daily_menus').where({ date: dateStr }).get()
       .then(res => {
         if (res.data.length > 0 && res.data[0].dishes.length > 0) {
@@ -90,25 +89,22 @@ Page({
   },
 
   getMarkedDaysByMonth(year, month) {
-    if (!db) return Promise.resolve([]); // 【新增】安全校验
+    if (!db) return Promise.resolve([]);
     const monthStr = `${year}-${String(month).padStart(2, '0')}`;
     return db.collection('diancai_daily_menus').where({
       date: db.RegExp({ regexp: '^' + monthStr })
     }).get().then(res => {
-      return res.data
-        .filter(item => item.dishes && item.dishes.length > 0)
+      return res.data.filter(item => item.dishes && item.dishes.length > 0)
         .map(item => parseInt(item.date.split('-')[2]));
     });
   },
 
   onDaySelect(e) {
-    if (!db) return; // 【新增】安全校验
+    if (!db) return;
     const { year, month, day } = e.detail;
     const formatDate = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const selectedDateStr = formatDate(year, month, day);
-    
     if (selectedDateStr === this.data.selectedDateString) return;
-
     wx.showLoading({ title: '查询中...' });
     this.getMenuByDate(selectedDateStr).then(res => {
       this.setData({
@@ -121,17 +117,45 @@ Page({
   },
 
   onMonthChange(e) {
-    if (!db) return; // 【新增】安全校验
+    if (!db) return;
     const { year, month } = e.detail;
-    this.getMarkedDaysByMonth(year, month).then(res => {
-      this.setData({ markedDaysInMonth: res });
-    });
+    this.getMarkedDaysByMonth(year, month).then(res => this.setData({ markedDaysInMonth: res }));
   },
 
   goToOrderPage() {
     wx.navigateTo({ url: `/pages/order/order?date=${this.data.selectedDateString}` });
   },
+
   goToStatsPage() {
     wx.navigateTo({ url: '/pages/stats/stats' });
+  },
+
+  // 切换音乐播放/暂停
+  toggleMusic() {
+    const bgm = app.globalData && app.globalData.bgm;
+    if (!bgm) {
+      wx.showToast({ title: '音频不可用', icon: 'none' });
+      return;
+    }
+    if (bgm.paused) {
+      bgm.play();
+      this.setData({ isPlaying: true });
+    } else {
+      bgm.pause();
+      this.setData({ isPlaying: false });
+    }
+  },
+
+  onUnload() {
+    // 移除页面对 bgm 的绑定（没有具体 off API，使用空函数覆盖回调）
+    const bgm = app.globalData && app.globalData.bgm;
+    if (bgm) {
+      try {
+        bgm.onPlay && bgm.onPlay(() => {});
+        bgm.onPause && bgm.onPause(() => {});
+        bgm.onStop && bgm.onStop(() => {});
+        bgm.onEnded && bgm.onEnded(() => {});
+      } catch (e) {}
+    }
   }
 })
